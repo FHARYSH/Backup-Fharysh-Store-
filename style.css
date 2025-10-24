@@ -1,7 +1,7 @@
 /* Import Font & Reset */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 80px; } /* Adjust 80px if navbar height changes */
+html { scroll-behavior: smooth; scroll-padding-top: 80px; } /* Adjust 80px based on final navbar height */
 body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #343a40; line-height: 1.7; overflow-x: hidden; }
 .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
@@ -14,31 +14,72 @@ body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #34
 /* ==================== Navbar ==================== */
 .navbar { background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); padding: 1rem 0; border-bottom: 1px solid #e9ecef; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); transition: padding 0.3s ease; }
 .navbar.navbar-scrolled { padding: 0.7rem 0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
-.navbar .container { display: flex; justify-content: space-between; align-items: center; gap: 1rem; /* Tambah gap */ }
-.nav-brand { font-size: 1.4rem; font-weight: 700; color: #004a99; text-decoration: none; flex-shrink: 0; /* Agar tidak mengecil */ }
+.navbar .container { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.nav-brand { font-size: 1.4rem; font-weight: 700; color: #004a99; text-decoration: none; flex-shrink: 0; }
 
 /* Search Container di Navbar */
-.search-container-nav {
-    flex-grow: 1; /* Ambil sisa ruang */
-    max-width: 400px; /* Batasi lebar max */
-    margin: 0 1rem; /* Jarak kiri kanan */
-}
-#search-bar { /* Search bar di navbar */
-    width: 100%;
-    padding: 8px 15px; /* Lebih kecil */
-    font-size: 0.9rem; 
-    font-family: 'Poppins', sans-serif; 
-    border: 1px solid #ced4da; 
-    border-radius: 20px; /* Lebih bulat */
-    transition: all 0.3s ease; 
-}
+.search-container-nav { flex-grow: 1; max-width: 350px; /* Lebar dikurangi sedikit */ margin: 0 1rem; }
+#search-bar { width: 100%; padding: 8px 15px; font-size: 0.9rem; font-family: 'Poppins', sans-serif; border: 1px solid #ced4da; border-radius: 20px; transition: all 0.3s ease; }
 #search-bar:focus { outline: none; border-color: #0056b3; box-shadow: 0 0 8px rgba(0, 86, 179, 0.15); }
 
-.nav-links { display: flex; gap: 15px 20px; flex-shrink: 0; }
-.nav-links a { text-decoration: none; color: #0056b3; font-weight: 600; font-size: 0.9rem; /* Sedikit kecil */ padding: 8px 10px; border-radius: 5px; transition: all 0.3s ease; position: relative; white-space: nowrap; /* Agar tidak wrap */ }
-.nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 50%; transform: translateX(-50%); background-color: #004a99; transition: width 0.3s ease; }
-.nav-links a:hover::after { width: 60%; }
+.nav-links { display: flex; align-items: center; /* Vertically align items */ gap: 15px 20px; flex-shrink: 0; }
+.nav-links a { text-decoration: none; color: #0056b3; font-weight: 600; font-size: 0.9rem; padding: 8px 10px; border-radius: 5px; transition: all 0.3s ease; position: relative; white-space: nowrap; }
 .nav-links a:hover { color: #003366; }
+
+/* Dropdown Styling */
+.dropdown { position: relative; } /* Wrapper untuk positioning */
+.dropdown-toggle { display: flex; align-items: center; cursor: pointer; }
+.dropdown-arrow { font-size: 0.7em; margin-left: 5px; transition: transform 0.3s ease; }
+.dropdown:hover .dropdown-arrow { transform: rotate(180deg); } /* Panah berputar */
+
+.dropdown-menu {
+    display: none; /* Sembunyi awal */
+    position: absolute;
+    top: calc(100% + 10px); /* Posisi di bawah link + jarak */
+    left: 50%;
+    transform: translateX(-50%); /* Center dropdown */
+    min-width: 600px; /* Lebar dropdown */
+    max-width: 90vw;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, top 0.3s ease;
+    display: flex; /* Menggunakan flexbox untuk kolom */
+    gap: 1.5rem;
+}
+.dropdown:hover .dropdown-menu {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+    top: calc(100% + 5px); /* Efek muncul sedikit ke atas */
+}
+
+.dropdown-column { flex: 1; min-width: 150px; } /* Kolom fleksibel */
+.dropdown-column h4 {
+    font-size: 1rem;
+    color: #004a99;
+    margin-bottom: 0.8rem;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 0.4rem;
+}
+.dropdown-menu a {
+    display: block; /* Link jadi full width */
+    color: #343a40;
+    font-size: 0.9rem;
+    padding: 6px 0; /* Jarak vertikal */
+    text-decoration: none;
+    transition: color 0.3s ease, padding-left 0.3s ease;
+    font-weight: 400; /* Reset font weight */
+}
+.dropdown-menu a:hover {
+    color: #0056b3;
+    padding-left: 5px; /* Indent saat hover */
+    font-weight: 600;
+}
 
 /* Hamburger Menu (Sama) */
 .hamburger-menu { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
@@ -51,69 +92,24 @@ body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #34
 #hero h2 { font-size: 3rem; font-weight: 700; margin-bottom: 1rem; color: #fff; }
 .typed-cursor { color: #ffc107; font-weight: bold; }
 #hero p { font-size: 1.2rem; margin-bottom: 1rem; max-width: 600px; margin-left: auto; margin-right: auto; opacity: 0.9; }
-.scroll-prompt { /* Teks pengganti tombol */
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ffc107; /* Warna kuning */
-    margin-top: 1.5rem;
-    animation: bounce 2s infinite; /* Efek memantul */
-}
+.scroll-prompt { font-size: 1rem; font-weight: 600; color: #ffc107; margin-top: 1.5rem; animation: bounce 2s infinite; }
 @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
-
-/* ==================== Product Quick List ==================== */
-#product-quick-list {
-    background-color: #fff; /* Latar putih */
-    padding: 3rem 0;
-    border-bottom: 1px solid #dee2e6;
-}
-#product-quick-list h2 {
-    margin-bottom: 2rem;
-}
-.quick-list-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 kolom */
-    gap: 2rem;
-}
-.category-column h3 {
-    font-size: 1.2rem;
-    color: #004a99;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid #0056b3;
-    padding-bottom: 0.5rem;
-}
-.category-column ul {
-    list-style: none;
-    padding: 0;
-}
-.category-column li {
-    margin-bottom: 0.6rem;
-}
-.category-column a {
-    text-decoration: none;
-    color: #343a40;
-    font-size: 0.95rem;
-    transition: color 0.3s ease;
-}
-.category-column a:hover {
-    color: #0056b3;
-    font-weight: 600;
-}
+/* Tombol di Hero */
+.btn { display: inline-block; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: 600; font-size: 1rem; transition: all 0.3s ease; }
+.btn-primary { background-color: #ffc107; color: #333; border: 2px solid #ffc107; }
+.btn-primary:hover { background-color: transparent; color: #ffc107; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2); }
 
 
-/* ==================== Main Content (Styling Umum Sama) ==================== */
+/* ==================== Main Content Styling (Sama seperti sebelumnya) ==================== */
 main { padding: 3rem 0; }
 section { padding: 3rem 0; border-bottom: 1px solid #dee2e6; }
 section:last-child { border-bottom: none; }
 h2 { text-align: center; font-size: 2.2rem; font-weight: 700; margin-bottom: 2rem; color: #004a99; }
-
-/* Kenapa Kami / Tentang (Sama) */
 #why-us h2 { margin-bottom: 1rem; }
 .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; text-align: center; }
 .feature-item { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06); transition: transform 0.3s ease, box-shadow 0.3s ease; }
 .feature-item:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); }
 .feature-item h3 { font-size: 1.25rem; color: #004a99; margin-bottom: 0.5rem; }
-
-/* Kategori Produk (Sama) */
 .product-section h2 { font-size: 2rem; text-align: left; border-bottom: 3px solid #0056b3; padding-bottom: 0.5rem; margin-bottom: 2rem; }
 .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.8rem; }
 .product-card { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 74, 153, 0.06), 0 5px 15px rgba(0, 74, 153, 0.08); text-align: center; padding: 1.5rem; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; overflow: hidden; }
@@ -122,29 +118,16 @@ h2 { text-align: center; font-size: 2.2rem; font-weight: 700; margin-bottom: 2re
 .product-card h2 { font-size: 1.3rem; margin-bottom: 0.5rem; }
 .product-card .description { font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem; flex-grow: 1; }
 .product-card .price { font-size: 1.4rem; font-weight: 700; color: #004a99; margin-bottom: 1.5rem; }
-
-/* Tombol Order (Sama) */
 .btn-order { display: inline-block; background-color: #25D366; color: #fff; padding: 10px 18px; text-decoration: none; font-weight: 600; font-size: 0.95rem; border-radius: 5px; transition: all 0.3s ease; border: 2px solid transparent; }
 .btn-order:hover { background-color: #fff; color: #25D366; border: 2px solid #25D366; transform: scale(1.03); box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2); }
-
-/* Cara Order (Sama) */
 #how-to-order ol { max-width: 600px; margin: 0 auto; padding-left: 20px; }
 #how-to-order li { font-size: 1.05rem; margin-bottom: 1rem; line-height: 1.7; }
-
-/* Info Tambahan / Kontak (Sama, + main contact) */
-#kontak h2 { margin-bottom: 1rem; } /* Update ID */
+#kontak h2 { margin-bottom: 1rem; }
 .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
 .info-card { background: #e9f5ff; border: 1px solid #bde0ff; color: #004a99; padding: 1rem; border-radius: 8px; text-align: center; text-decoration: none; font-weight: 600; transition: all 0.3s ease; }
 .info-card:hover { background: #0056b3; color: #fff; box-shadow: 0 4px 10px rgba(0, 86, 179, 0.15); transform: translateY(-3px); }
-.info-card.main-contact { /* Tombol Kontak Utama */
-    background: #0056b3;
-    color: #fff;
-    font-weight: 700;
-}
-.info-card.main-contact:hover {
-    background: #004a99;
-}
-
+.info-card.main-contact { background: #0056b3; color: #fff; font-weight: 700; }
+.info-card.main-contact:hover { background: #004a99; }
 
 /* ==================== Footer (Sama) ==================== */
 footer { background-color: #343a40; color: #adb5bd; text-align: center; padding: 2rem 0; margin-top: 3rem; }
@@ -157,25 +140,38 @@ footer { background-color: #343a40; color: #adb5bd; text-align: center; padding:
 /* ==================== Responsive ==================== */
 @media (max-width: 992px) {
     html { scroll-padding-top: 70px; } 
-    .navbar .container { flex-wrap: wrap; /* Allow wrap */ } 
-    .nav-brand { order: 1; /* Brand di kiri */ }
-    .hamburger-menu { order: 3; /* Hamburger di kanan */ display: flex; }
+    .navbar .container { flex-wrap: wrap; } 
+    .nav-brand { order: 1; font-size: 1.2rem; }
+    .hamburger-menu { order: 3; display: flex; }
     .search-container-nav { 
-        order: 4; /* Search di bawah saat mobile menu terbuka */
+        order: 4; 
         width: 100%; 
         max-width: 100%; 
-        margin: 0.5rem 0 0 0; /* Jarak atas */
-        display: none; /* Sembunyikan awal */
+        margin: 0.5rem 0 0 0; 
+        display: none; 
     }
     .nav-links { 
-        order: 5; /* Menu links paling bawah */
-        display: none; position: static; /* Ubah dari absolute */ flex-direction: column; width: 100%; background-color: transparent; box-shadow: none; border-top: none; padding: 0.5rem 0 0 0; 
+        order: 5; 
+        display: none; 
+        position: static; 
+        flex-direction: column; 
+        width: 100%; 
+        background-color: transparent; 
+        box-shadow: none; 
+        border-top: none; 
+        padding: 0.5rem 0 0 0; 
     }
-    /* Tampilkan search & nav links saat hamburger aktif */
-    .nav-links.active, .search-container-nav.active { 
-        display: flex; 
-    } 
-    .nav-links a { padding: 10px 0; border-bottom: 1px solid #f4f7f6; text-align: left; width: 100%; }
+    /* Sembunyikan dropdown di mobile */
+    .dropdown-menu { display: none !important; } 
+    .dropdown-arrow { display: none; } /* Sembunyikan panah dropdown */
+    .dropdown a.dropdown-toggle { /* Pastikan link Katalog tetap berfungsi */
+         pointer-events: auto; 
+    }
+        
+    .nav-links.active, .search-container-nav.active { display: flex; } 
+    .nav-links a, .dropdown { /* Target wrapper dropdown juga */
+        padding: 10px 0; border-bottom: 1px solid #f4f7f6; text-align: left; width: 100%; 
+    }
     .nav-links a::after { display: none; }
     .hamburger-menu.active .bar:nth-child(2) { opacity: 0; }
     .hamburger-menu.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
@@ -184,20 +180,212 @@ footer { background-color: #343a40; color: #adb5bd; text-align: center; padding:
     #hero { height: 60vh; min-height: 350px; }
     #hero h2 { font-size: 2.2rem; }
     #hero p { font-size: 1rem; }
-    
-    /* Product Quick List di HP */
-    .quick-list-grid { grid-template-columns: 1fr 1fr; /* 2 kolom di HP */ gap: 1.5rem; }
-    .category-column h3 { font-size: 1.1rem; }
-    .category-column a { font-size: 0.9rem; }
 }
 
 @media (max-width: 576px) {
-    /* Product Quick List di HP Kecil */
-     .quick-list-grid { grid-template-columns: 1fr; /* 1 kolom di HP kecil */ }
-     
      .nav-brand { font-size: 1.1rem; }
      .nav-links a { font-size: 0.85rem;}
-     .product-grid { grid-template-columns: 1fr; } /* Kartu produk 1 kolom */
+     .product-grid { grid-template-columns: 1fr; } 
      h2 { font-size: 1.8rem; }
      .product-section h2 { font-size: 1.6rem; }
-                  }
+     .dropdown-menu { min-width: 90vw; } /* Dropdown lebih lebar di HP */
+     .dropdown-menu { flex-direction: column;} /* Kolom dropdown jadi vertikal di HP kecil */
+    }
+
+/* ===================================== */
+/* TAMBAHKAN KODE INI UNTUK DARK MODE */
+/* ===================================== */
+
+@media (prefers-color-scheme: dark) {
+    
+    /* Warna Dasar Dark Mode */
+    body {
+        background-color: #1a1a1a; /* Latar Belakang Gelap Utama */
+        color: #e0e0e0; /* Warna Teks Utama (Putih pudar) */
+    }
+
+    /* Navbar Dark Mode */
+    .navbar {
+        background-color: rgba(26, 26, 26, 0.85); /* Navbar Gelap Semi Transparan */
+        backdrop-filter: blur(10px);
+        border-bottom-color: #333; /* Border lebih gelap */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Bayangan lebih jelas */
+    }
+    .navbar.navbar-scrolled {
+         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+    .nav-brand {
+        color: #cce7ff; /* Brand Biru Muda */
+    }
+    #search-bar {
+        background-color: #333; /* Input gelap */
+        border-color: #555;
+        color: #e0e0e0; /* Teks input putih */
+    }
+    #search-bar::placeholder {
+        color: #888; /* Placeholder lebih terang */
+    }
+     #search-bar:focus {
+        border-color: #5cacee; /* Border biru muda saat fokus */
+        box-shadow: 0 0 8px rgba(92, 172, 238, 0.3);
+    }
+    .hamburger-menu .bar {
+        background-color: #cce7ff; /* Garis hamburger biru muda */
+    }
+    .nav-links a {
+        color: #90cfff; /* Link biru muda */
+    }
+     .nav-links a:hover {
+        color: #e0f2ff; /* Link lebih terang saat hover */
+    }
+    .nav-links a::after {
+         background-color: #90cfff; /* Garis bawah biru muda */
+    }
+     /* Dropdown Dark Mode */
+    .dropdown-menu {
+        background-color: #2a2a2a; /* Background dropdown gelap */
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    }
+    .dropdown-column h4 {
+        color: #90cfff; /* Judul kolom biru muda */
+        border-bottom-color: #5cacee;
+    }
+    .dropdown-menu a {
+        color: #c0c0c0; /* Link dropdown abu-abu terang */
+    }
+    .dropdown-menu a:hover {
+        color: #e0f2ff; /* Lebih terang saat hover */
+    }
+
+
+    /* Hero Section Dark Mode */
+    .hero-overlay {
+        background-color: rgba(10, 10, 20, 0.8); /* Overlay lebih gelap */
+    }
+    #hero h2, #hero p {
+        color: #fff; /* Pastikan teks hero putih */
+    }
+    
+    /* Product Quick List Dark Mode */
+    #product-quick-list {
+         background-color: #222; /* Latar sedikit beda */
+         border-bottom-color: #333;
+    }
+     #product-quick-list h2 {
+         color: #cce7ff; /* Judul biru muda */
+     }
+    .category-column h3 {
+        color: #90cfff;
+        border-bottom-color: #5cacee;
+    }
+    .category-column a {
+        color: #c0c0c0;
+    }
+    .category-column a:hover {
+        color: #e0f2ff;
+    }
+
+
+    /* Konten Utama Dark Mode */
+    section {
+        border-bottom-color: #333;
+    }
+    h2 { /* Judul section umum */
+         color: #cce7ff;
+    }
+
+    /* Kenapa Kami / Tentang Dark Mode */
+    .feature-item {
+        background-color: #2a2a2a; /* Kartu fitur gelap */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+     .feature-item:hover {
+         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+     }
+    .feature-item h3 {
+        color: #90cfff; /* Judul fitur biru muda */
+    }
+
+    /* Kategori Produk Dark Mode */
+    .product-section h2 {
+        color: #cce7ff;
+        border-bottom-color: #5cacee;
+    }
+    .product-card {
+        background-color: #2a2a2a; /* Kartu produk gelap */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.25);
+    }
+    .product-card:hover {
+         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25), 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+    .product-card h2 {
+         color: #e0e0e0; /* Judul kartu putih pudar */
+    }
+    .product-card .description {
+        color: #a0a0a0; /* Deskripsi abu-abu */
+    }
+    .product-card .price {
+        color: #90cfff; /* Harga biru muda */
+    }
+    /* Tombol Order Dark Mode (Hijau tetap kontras) */
+    .btn-order:hover {
+         background-color: #1a1a1a; /* Background gelap saat hover */
+         color: #25D366; /* Teks hijau */
+         border: 2px solid #25D366;
+         box-shadow: 0 4px 10px rgba(37, 211, 102, 0.15); 
+    }
+
+    /* Cara Order Dark Mode */
+    #how-to-order li {
+        color: #c0c0c0; /* Teks list abu-abu terang */
+    }
+
+    /* Info Tambahan / Kontak Dark Mode */
+    .info-card {
+        background: #333; /* Kartu info gelap */
+        border-color: #555;
+        color: #90cfff; /* Teks biru muda */
+    }
+    .info-card:hover {
+        background: #0056b3; /* Biru solid saat hover */
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(0, 86, 179, 0.25); 
+    }
+     .info-card.main-contact { 
+         background: #0056b3; 
+         color: #fff;
+     }
+     .info-card.main-contact:hover {
+         background: #004a99;
+     }
+
+    /* Footer Dark Mode */
+    footer {
+        background-color: #111; /* Footer sangat gelap */
+        color: #777; /* Teks abu-abu gelap */
+    }
+
+    /* Back to Top Button Dark Mode */
+    .back-to-top-btn {
+        background-color: #0056b3;
+    }
+    .back-to-top-btn:hover {
+         background-color: #004a99;
+    }
+    
+    /* Responsive Navbar Dark Mode (Mobile Menu) */
+    @media (max-width: 992px) {
+        .nav-links {
+            background-color: #2a2a2a; /* Background menu mobile gelap */
+             box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+        }
+        .nav-links a {
+             color: #c0c0c0;
+             border-bottom-color: #444;
+        }
+        .nav-links a:hover {
+            color: #e0f2ff;
+        }
+    }
+    
+} /* Akhir dari @media (prefers-color-scheme: dark) */
