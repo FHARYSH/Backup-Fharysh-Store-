@@ -1,0 +1,366 @@
+/* Import Font dari Google */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* Reset CSS Dasar & Smooth Scroll */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html {
+    scroll-behavior: smooth; /* Smooth scroll default */
+    scroll-padding-top: 80px; /* Offset agar tidak tertutup navbar sticky */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa; /* Warna latar sedikit lebih terang */
+    color: #343a40; /* Warna teks sedikit lebih gelap */
+    line-height: 1.7;
+    overflow-x: hidden; /* Mencegah scroll horizontal */
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ==================== Preloader ==================== */
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
+}
+.loader {
+    border: 5px solid #f3f3f3; /* Light grey */
+    border-top: 5px solid #0056b3; /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* Kelas untuk menyembunyikan preloader */
+#preloader.hidden {
+    opacity: 0;
+    pointer-events: none; /* Agar tidak bisa diklik */
+}
+
+
+/* ==================== Header ==================== */
+header {
+    background: linear-gradient(135deg, #004a99 0%, #0056b3 100%);
+    color: #fff;
+    padding: 1.5rem 0; /* Sedikit lebih kecil */
+    text-align: center;
+}
+header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+/* ==================== Navbar ==================== */
+.navbar {
+    background-color: rgba(255, 255, 255, 0.95); /* Semi transparan */
+    backdrop-filter: blur(8px); /* Efek Glassmorphism */
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: padding 0.3s ease; /* Transisi untuk shrink */
+}
+/* Gaya Navbar Saat di Scroll (Shrink) */
+.navbar.navbar-scrolled {
+    padding: 0.7rem 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between; /* Brand kiri, menu kanan */
+    align-items: center;
+}
+.nav-brand {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #004a99;
+    text-decoration: none;
+}
+.nav-links {
+    display: flex;
+    gap: 15px 20px;
+}
+.nav-links a {
+    text-decoration: none;
+    color: #0056b3;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    position: relative; /* Untuk underline effect */
+}
+/* Efek Garis Bawah saat Hover */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #004a99;
+    transition: width 0.3s ease;
+}
+.nav-links a:hover::after {
+    width: 70%; /* Lebar garis bawah */
+}
+.nav-links a:hover {
+    color: #003366;
+}
+
+/* Hamburger Menu (Sama seperti sebelumnya) */
+.hamburger-menu { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+.hamburger-menu .bar { display: block; width: 25px; height: 3px; background-color: #004a99; border-radius: 5px; transition: all 0.3s ease-in-out; }
+
+/* ==================== Hero Section ==================== */
+#hero {
+    position: relative;
+    height: 70vh; /* Tinggi hero section */
+    min-height: 400px;
+    background: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover; /* Contoh Background Image */
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-align: center;
+}
+/* Overlay Gelap agar Teks Terbaca */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 51, 102, 0.7); /* Biru gelap transparan */
+    z-index: 1;
+}
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+#hero h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #fff; /* Override warna default h2 */
+}
+/* Styling untuk Cursor Typed.js */
+.typed-cursor {
+    color: #ffc107; /* Warna kuning aksen */
+    font-weight: bold;
+}
+#hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.9;
+}
+/* Tombol di Hero */
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+.btn-primary {
+    background-color: #ffc107; /* Warna kuning */
+    color: #333;
+    border: 2px solid #ffc107;
+}
+.btn-primary:hover {
+    background-color: transparent;
+    color: #ffc107;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
+}
+
+
+/* ==================== Main Content ==================== */
+main {
+    padding: 3rem 0;
+}
+section {
+    padding: 3rem 0; /* Jarak antar section lebih besar */
+    border-bottom: 1px solid #dee2e6;
+}
+section:last-child { border-bottom: none; }
+
+h2 {
+    text-align: center;
+    font-size: 2.2rem; /* Ukuran H2 lebih besar */
+    font-weight: 700;
+    margin-bottom: 2rem; /* Jarak bawah H2 lebih besar */
+    color: #004a99;
+}
+
+/* Search Bar (Sama) */
+#search-section { padding: 2rem 0; border-bottom: 1px solid #dee2e6; }
+#search-bar { width: 100%; padding: 15px; font-size: 1.1rem; font-family: 'Poppins', sans-serif; border: 1px solid #ced4da; border-radius: 8px; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+#search-bar:focus { outline: none; border-color: #0056b3; box-shadow: 0 0 10px rgba(0, 86, 179, 0.1); }
+
+/* Kenapa Kami / Tentang */
+#why-us h2 { margin-bottom: 1rem; }
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; text-align: center; }
+.feature-item { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.feature-item:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); }
+.feature-item h3 { font-size: 1.25rem; color: #004a99; margin-bottom: 0.5rem; }
+
+/* Kategori Produk */
+.product-section h2 { font-size: 2rem; text-align: left; border-bottom: 3px solid #0056b3; padding-bottom: 0.5rem; margin-bottom: 2rem; }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.8rem; /* Jarak antar kartu lebih besar */ }
+
+.product-card {
+    background: #fff;
+    border-radius: 10px;
+    /* Bayangan lebih halus */
+    box-shadow: 0 2px 8px rgba(0, 74, 153, 0.06), 0 5px 15px rgba(0, 74, 153, 0.08); 
+    text-align: center;
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; /* Untuk efek hover tambahan jika perlu */
+}
+/* Hover Kartu Lebih Elegan */
+.product-card:hover {
+    transform: translateY(-8px); 
+    box-shadow: 0 8px 16px rgba(0, 74, 153, 0.08), 0 15px 30px rgba(0, 74, 153, 0.1); 
+}
+.product-card img { width: 70px; height: 70px; margin-bottom: 1.2rem; align-self: center; object-fit: contain; } /* object-fit agar logo tidak gepeng */
+.product-card h2 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+.product-card .description { font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem; flex-grow: 1; }
+.product-card .price { font-size: 1.4rem; font-weight: 700; color: #004a99; margin-bottom: 1.5rem; }
+
+/* Tombol Order (Refined Hover) */
+.btn-order {
+    display: inline-block;
+    background-color: #25D366; 
+    color: #fff;
+    padding: 10px 18px; /* Sedikit lebih kecil */
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+.btn-order:hover {
+    background-color: #fff;
+    color: #25D366;
+    border: 2px solid #25D366;
+    transform: scale(1.03); 
+    box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2); 
+}
+
+/* Cara Order */
+#how-to-order ol { max-width: 600px; margin: 0 auto; padding-left: 20px; }
+#how-to-order li { font-size: 1.05rem; margin-bottom: 1rem; line-height: 1.7; }
+
+/* Info Tambahan / Kontak */
+#info-tambahan h2 { margin-bottom: 1rem; }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+.info-card { background: #e9f5ff; border: 1px solid #bde0ff; color: #004a99; padding: 1rem; border-radius: 8px; text-align: center; text-decoration: none; font-weight: 600; transition: all 0.3s ease; }
+.info-card:hover { background: #0056b3; color: #fff; box-shadow: 0 4px 10px rgba(0, 86, 179, 0.15); transform: translateY(-3px); }
+
+
+/* ==================== Footer ==================== */
+footer {
+    background-color: #343a40;
+    color: #adb5bd;
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+/* ==================== Back to Top Button ==================== */
+.back-to-top-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: #0056b3;
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    text-decoration: none;
+    opacity: 0; /* Sembunyi awal */
+    visibility: hidden; /* Sembunyi awal */
+    transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.3s ease;
+    z-index: 900;
+}
+.back-to-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+}
+.back-to-top-btn:hover {
+    background-color: #004a99;
+}
+
+
+/* ==================== Responsive Navbar (Sama) ==================== */
+@media (max-width: 992px) {
+    /* Offset scroll di HP disesuaikan jika tinggi navbar berubah */
+    html { scroll-padding-top: 70px; } 
+
+    .nav-brand { font-size: 1.2rem; } /* Kecilkan brand di HP */
+    .hamburger-menu { display: flex; }
+    .nav-links {
+        display: none; 
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        flex-direction: column; 
+        padding: 1rem;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        border-top: 1px solid #f0f0f0;
+    }
+    .nav-links.active { display: flex; }
+    .nav-links a { padding: 12px 10px; border-bottom: 1px solid #f4f7f6; width: 100%; text-align: center;}
+    .nav-links a::after { display: none; } /* Hilangkan efek garis bawah di HP */
+
+    /* Animasi "X" Hamburger (Sama) */
+    .hamburger-menu.active .bar:nth-child(2) { opacity: 0; }
+    .hamburger-menu.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .hamburger-menu.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+    
+    /* Responsive Hero */
+    #hero { height: 60vh; min-height: 350px; }
+    #hero h2 { font-size: 2.2rem; }
+    #hero p { font-size: 1rem; }
+    .btn { padding: 10px 20px; font-size: 0.95rem;}
+}
