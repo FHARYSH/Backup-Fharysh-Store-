@@ -1,203 +1,143 @@
-/* Import Font & Reset */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 80px; } /* Adjust 80px if navbar height changes */
-body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #343a40; line-height: 1.7; overflow-x: hidden; }
-.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-
-/* ==================== Preloader (Sama) ==================== */
-#preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #fff; display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease-out; }
-.loader { border: 5px solid #f3f3f3; border-top: 5px solid #0056b3; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-#preloader.hidden { opacity: 0; pointer-events: none; }
-
-/* ==================== Navbar ==================== */
-.navbar { background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); padding: 1rem 0; border-bottom: 1px solid #e9ecef; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); transition: padding 0.3s ease; }
-.navbar.navbar-scrolled { padding: 0.7rem 0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
-.navbar .container { display: flex; justify-content: space-between; align-items: center; gap: 1rem; /* Tambah gap */ }
-.nav-brand { font-size: 1.4rem; font-weight: 700; color: #004a99; text-decoration: none; flex-shrink: 0; /* Agar tidak mengecil */ }
-
-/* Search Container di Navbar */
-.search-container-nav {
-    flex-grow: 1; /* Ambil sisa ruang */
-    max-width: 400px; /* Batasi lebar max */
-    margin: 0 1rem; /* Jarak kiri kanan */
-}
-#search-bar { /* Search bar di navbar */
-    width: 100%;
-    padding: 8px 15px; /* Lebih kecil */
-    font-size: 0.9rem; 
-    font-family: 'Poppins', sans-serif; 
-    border: 1px solid #ced4da; 
-    border-radius: 20px; /* Lebih bulat */
-    transition: all 0.3s ease; 
-}
-#search-bar:focus { outline: none; border-color: #0056b3; box-shadow: 0 0 8px rgba(0, 86, 179, 0.15); }
-
-.nav-links { display: flex; gap: 15px 20px; flex-shrink: 0; }
-.nav-links a { text-decoration: none; color: #0056b3; font-weight: 600; font-size: 0.9rem; /* Sedikit kecil */ padding: 8px 10px; border-radius: 5px; transition: all 0.3s ease; position: relative; white-space: nowrap; /* Agar tidak wrap */ }
-.nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 50%; transform: translateX(-50%); background-color: #004a99; transition: width 0.3s ease; }
-.nav-links a:hover::after { width: 60%; }
-.nav-links a:hover { color: #003366; }
-
-/* Hamburger Menu (Sama) */
-.hamburger-menu { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
-.hamburger-menu .bar { display: block; width: 25px; height: 3px; background-color: #004a99; border-radius: 5px; transition: all 0.3s ease-in-out; }
-
-/* ==================== Hero Section (Sama) ==================== */
-#hero { position: relative; height: 70vh; min-height: 400px; background: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover; display: flex; align-items: center; color: #fff; text-align: center; }
-.hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 51, 102, 0.75); z-index: 1; }
-.hero-content { position: relative; z-index: 2; }
-#hero h2 { font-size: 3rem; font-weight: 700; margin-bottom: 1rem; color: #fff; }
-.typed-cursor { color: #ffc107; font-weight: bold; }
-#hero p { font-size: 1.2rem; margin-bottom: 1rem; max-width: 600px; margin-left: auto; margin-right: auto; opacity: 0.9; }
-.scroll-prompt { /* Teks pengganti tombol */
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ffc107; /* Warna kuning */
-    margin-top: 1.5rem;
-    animation: bounce 2s infinite; /* Efek memantul */
-}
-@keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
-
-/* ==================== Product Quick List ==================== */
-#product-quick-list {
-    background-color: #fff; /* Latar putih */
-    padding: 3rem 0;
-    border-bottom: 1px solid #dee2e6;
-}
-#product-quick-list h2 {
-    margin-bottom: 2rem;
-}
-.quick-list-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 kolom */
-    gap: 2rem;
-}
-.category-column h3 {
-    font-size: 1.2rem;
-    color: #004a99;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid #0056b3;
-    padding-bottom: 0.5rem;
-}
-.category-column ul {
-    list-style: none;
-    padding: 0;
-}
-.category-column li {
-    margin-bottom: 0.6rem;
-}
-.category-column a {
-    text-decoration: none;
-    color: #343a40;
-    font-size: 0.95rem;
-    transition: color 0.3s ease;
-}
-.category-column a:hover {
-    color: #0056b3;
-    font-weight: 600;
-}
-
-
-/* ==================== Main Content (Styling Umum Sama) ==================== */
-main { padding: 3rem 0; }
-section { padding: 3rem 0; border-bottom: 1px solid #dee2e6; }
-section:last-child { border-bottom: none; }
-h2 { text-align: center; font-size: 2.2rem; font-weight: 700; margin-bottom: 2rem; color: #004a99; }
-
-/* Kenapa Kami / Tentang (Sama) */
-#why-us h2 { margin-bottom: 1rem; }
-.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; text-align: center; }
-.feature-item { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06); transition: transform 0.3s ease, box-shadow 0.3s ease; }
-.feature-item:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); }
-.feature-item h3 { font-size: 1.25rem; color: #004a99; margin-bottom: 0.5rem; }
-
-/* Kategori Produk (Sama) */
-.product-section h2 { font-size: 2rem; text-align: left; border-bottom: 3px solid #0056b3; padding-bottom: 0.5rem; margin-bottom: 2rem; }
-.product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.8rem; }
-.product-card { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 74, 153, 0.06), 0 5px 15px rgba(0, 74, 153, 0.08); text-align: center; padding: 1.5rem; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; overflow: hidden; }
-.product-card:hover { transform: translateY(-8px); box-shadow: 0 8px 16px rgba(0, 74, 153, 0.08), 0 15px 30px rgba(0, 74, 153, 0.1); }
-.product-card img { width: 70px; height: 70px; margin-bottom: 1.2rem; align-self: center; object-fit: contain; }
-.product-card h2 { font-size: 1.3rem; margin-bottom: 0.5rem; }
-.product-card .description { font-size: 0.9rem; color: #6c757d; margin-bottom: 1rem; flex-grow: 1; }
-.product-card .price { font-size: 1.4rem; font-weight: 700; color: #004a99; margin-bottom: 1.5rem; }
-
-/* Tombol Order (Sama) */
-.btn-order { display: inline-block; background-color: #25D366; color: #fff; padding: 10px 18px; text-decoration: none; font-weight: 600; font-size: 0.95rem; border-radius: 5px; transition: all 0.3s ease; border: 2px solid transparent; }
-.btn-order:hover { background-color: #fff; color: #25D366; border: 2px solid #25D366; transform: scale(1.03); box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2); }
-
-/* Cara Order (Sama) */
-#how-to-order ol { max-width: 600px; margin: 0 auto; padding-left: 20px; }
-#how-to-order li { font-size: 1.05rem; margin-bottom: 1rem; line-height: 1.7; }
-
-/* Info Tambahan / Kontak (Sama, + main contact) */
-#kontak h2 { margin-bottom: 1rem; } /* Update ID */
-.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
-.info-card { background: #e9f5ff; border: 1px solid #bde0ff; color: #004a99; padding: 1rem; border-radius: 8px; text-align: center; text-decoration: none; font-weight: 600; transition: all 0.3s ease; }
-.info-card:hover { background: #0056b3; color: #fff; box-shadow: 0 4px 10px rgba(0, 86, 179, 0.15); transform: translateY(-3px); }
-.info-card.main-contact { /* Tombol Kontak Utama */
-    background: #0056b3;
-    color: #fff;
-    font-weight: 700;
-}
-.info-card.main-contact:hover {
-    background: #004a99;
-}
-
-
-/* ==================== Footer (Sama) ==================== */
-footer { background-color: #343a40; color: #adb5bd; text-align: center; padding: 2rem 0; margin-top: 3rem; }
-
-/* ==================== Back to Top Button (Sama) ==================== */
-.back-to-top-btn { position: fixed; bottom: 25px; right: 25px; background-color: #0056b3; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; text-decoration: none; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease, background-color 0.3s ease; z-index: 900; }
-.back-to-top-btn.visible { opacity: 1; visibility: visible; }
-.back-to-top-btn:hover { background-color: #004a99; }
-
-/* ==================== Responsive ==================== */
-@media (max-width: 992px) {
-    html { scroll-padding-top: 70px; } 
-    .navbar .container { flex-wrap: wrap; /* Allow wrap */ } 
-    .nav-brand { order: 1; /* Brand di kiri */ }
-    .hamburger-menu { order: 3; /* Hamburger di kanan */ display: flex; }
-    .search-container-nav { 
-        order: 4; /* Search di bawah saat mobile menu terbuka */
-        width: 100%; 
-        max-width: 100%; 
-        margin: 0.5rem 0 0 0; /* Jarak atas */
-        display: none; /* Sembunyikan awal */
-    }
-    .nav-links { 
-        order: 5; /* Menu links paling bawah */
-        display: none; position: static; /* Ubah dari absolute */ flex-direction: column; width: 100%; background-color: transparent; box-shadow: none; border-top: none; padding: 0.5rem 0 0 0; 
-    }
-    /* Tampilkan search & nav links saat hamburger aktif */
-    .nav-links.active, .search-container-nav.active { 
-        display: flex; 
-    } 
-    .nav-links a { padding: 10px 0; border-bottom: 1px solid #f4f7f6; text-align: left; width: 100%; }
-    .nav-links a::after { display: none; }
-    .hamburger-menu.active .bar:nth-child(2) { opacity: 0; }
-    .hamburger-menu.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-    .hamburger-menu.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+// ===========================================
+// FUNGSI UTAMA (dijalankan saat Halaman Siap)
+// ===========================================
+document.addEventListener('DOMContentLoaded', () => {
     
-    #hero { height: 60vh; min-height: 350px; }
-    #hero h2 { font-size: 2.2rem; }
-    #hero p { font-size: 1rem; }
-    
-    /* Product Quick List di HP */
-    .quick-list-grid { grid-template-columns: 1fr 1fr; /* 2 kolom di HP */ gap: 1.5rem; }
-    .category-column h3 { font-size: 1.1rem; }
-    .category-column a { font-size: 0.9rem; }
-}
+    // --- 1. PRELOADER ---
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        window.addEventListener('load', () => {
+            preloader.classList.add('hidden');
+        });
+        setTimeout(() => { preloader.classList.add('hidden'); }, 1500);
+    }
 
-@media (max-width: 576px) {
-    /* Product Quick List di HP Kecil */
-     .quick-list-grid { grid-template-columns: 1fr; /* 1 kolom di HP kecil */ }
-     
-     .nav-brand { font-size: 1.1rem; }
-     .nav-links a { font-size: 0.85rem;}
-     .product-grid { grid-template-columns: 1fr; } /* Kartu produk 1 kolom */
-     h2 { font-size: 1.8rem; }
-     .product-section h2 { font-size: 1.6rem; }
-}
+    // --- 2. INISIALISASI AOS (ANIMASI SCROLL - LOOPING) ---
+    AOS.init({
+        duration: 800, 
+        once: false, // *** INI KUNCINYA AGAR LOOPING ***
+        offset: 80 // Offset sedikit lebih besar agar lebih sensitif
+    });
+
+    // --- 3. INISIALISASI TYPED.JS (EFEK KETIK) ---
+    const typedTarget = document.querySelector('.typed-text');
+    if (typedTarget) {
+        const typed = new Typed('.typed-text', {
+            strings: ['Hiburan.', 'Kreativitas.', 'Produktivitas.'], 
+            typeSpeed: 70, backSpeed: 50, backDelay: 1500, loop: true
+        });
+    }
+    
+    // --- 4. NAVBAR SHRINK ON SCROLL ---
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) { navbar.classList.add('navbar-scrolled'); } 
+            else { navbar.classList.remove('navbar-scrolled'); }
+        });
+    }
+
+    // --- 5. BACK TO TOP BUTTON ---
+    const backToTopButton = document.getElementById('back-to-top');
+    if (backToTopButton) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        });
+        backToTopButton.addEventListener('click', (e) => {
+             e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    // --- 6. KODE FUNGSI PENCARIAN (SEARCH BAR) ---
+    const searchBar = document.getElementById('search-bar');
+    if (searchBar) { 
+        // Define sections *outside* the event listener if they don't change
+        const productSections = document.querySelectorAll('.product-section');
+        const infoSection = document.getElementById('kontak'); // Ganti ID jika berubah
+
+        searchBar.addEventListener('keyup', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            // Function to filter cards within a section
+            const filterSection = (section, cardSelector, titleSelector) => {
+                let matchFoundInSection = false; 
+                const cards = section.querySelectorAll(cardSelector);
+                cards.forEach(card => {
+                    const titleElement = card.querySelector(titleSelector);
+                    if (titleElement) {
+                        const title = titleElement.textContent.toLowerCase();
+                        if (title.includes(searchTerm)) {
+                            // Use 'flex' for product cards, default for info cards
+                            card.style.display = (cardSelector === '.product-card') ? "flex" : ""; 
+                            matchFoundInSection = true;
+                        } else { card.style.display = "none"; }
+                    } else {
+                        // Handle cases where titleSelector might not match (optional)
+                         console.warn("Title element not found for selector:", titleSelector, "in card:", card);
+                         card.style.display = "none"; 
+                    }
+                });
+                // Show/hide the entire section
+                if (matchFoundInSection || searchTerm === "") { section.style.display = ""; } 
+                else { section.style.display = "none"; }
+            };
+
+            // Filter product sections
+            productSections.forEach(section => filterSection(section, '.product-card', 'h2'));
+            
+            // Filter info section
+            if (infoSection) { filterSection(infoSection, '.info-card', '.info-card'); /* Title is the card itself */ }
+        });
+    }
+
+
+    // --- 7. KODE FUNGSI HAMBURGER MENU (Update u/ Search Box) ---
+    const hamburger = document.querySelector('.hamburger-menu');
+    const navLinksContainer = document.querySelector('.nav-links');
+    const searchContainerNav = document.querySelector('.search-container-nav'); // Ambil search container
+
+    if (hamburger && navLinksContainer && searchContainerNav) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active'); 
+            navLinksContainer.classList.toggle('active');
+            searchContainerNav.classList.toggle('active'); // Togel search box juga
+        });
+    }
+
+    // --- 8. KODE FUNGSI SMOOTH SCROLL (Update u/ Product List) ---
+    // Gabungkan link navbar dan link product list
+    const scrollLinks = document.querySelectorAll('.nav-links a[href^="#"], #product-quick-list a[href^="#"]'); 
+    let navHeight = 0;
+    if (navbar) { navHeight = navbar.offsetHeight; }
+
+    scrollLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            
+            // Cek jika targetId valid dan bukan hanya '#'
+            if (targetId && targetId !== '#') {
+                const targetElement = document.querySelector(targetId);
+                 if (targetElement) {
+                      // Recalculate navHeight here in case it changed due to shrink or load
+                     if (navbar) { navHeight = navbar.offsetHeight; } 
+                     const targetPosition = targetElement.offsetTop - navHeight - 15; // Offset
+                     window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                 } else {
+                     console.warn("Target element not found for:", targetId); // Debugging
+                 }
+            } else if (targetId === '#hero' || targetId === '#') { // Link Home/#
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Otomatis tutup menu di HP setelah link diklik (jika menu terbuka)
+            if (navLinksContainer && hamburger && searchContainerNav && navLinksContainer.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                navLinksContainer.classList.remove('active');
+                searchContainerNav.classList.remove('active');
+            }
+        });
+    });
+
+}); // Akhir dari document.addEventListener('DOMContentLoaded')
