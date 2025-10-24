@@ -200,4 +200,4 @@ footer { background-color: #343a40; color: #adb5bd; text-align: center; padding:
      .product-grid { grid-template-columns: 1fr; } /* Kartu produk 1 kolom */
      h2 { font-size: 1.8rem; }
      .product-section h2 { font-size: 1.6rem; }
-}
+                  }
