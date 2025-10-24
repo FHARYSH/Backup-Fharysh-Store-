@@ -1,28 +1,19 @@
-// ===========================================
-// FUNGSI UTAMA (dijalankan saat Halaman Siap)
-// ===========================================
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. PRELOADER ---
     const preloader = document.getElementById('preloader');
     if (preloader) {
-        window.addEventListener('load', () => {
-            preloader.classList.add('hidden');
-        });
-        setTimeout(() => { preloader.classList.add('hidden'); }, 1500);
+        window.addEventListener('load', () => preloader.classList.add('hidden'));
+        setTimeout(() => preloader.classList.add('hidden'), 1500);
     }
 
     // --- 2. INISIALISASI AOS (ANIMASI SCROLL - LOOPING) ---
-    AOS.init({
-        duration: 800, 
-        once: false, // *** INI KUNCINYA AGAR LOOPING ***
-        offset: 80 // Offset sedikit lebih besar agar lebih sensitif
-    });
+    AOS.init({ duration: 800, once: false, offset: 80 });
 
     // --- 3. INISIALISASI TYPED.JS (EFEK KETIK) ---
     const typedTarget = document.querySelector('.typed-text');
     if (typedTarget) {
-        const typed = new Typed('.typed-text', {
+        new Typed('.typed-text', {
             strings: ['Hiburan.', 'Kreativitas.', 'Produktivitas.'], 
             typeSpeed: 70, backSpeed: 50, backDelay: 1500, loop: true
         });
@@ -52,14 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 6. KODE FUNGSI PENCARIAN (SEARCH BAR) ---
     const searchBar = document.getElementById('search-bar');
     if (searchBar) { 
-        // Define sections *outside* the event listener if they don't change
         const productSections = document.querySelectorAll('.product-section');
-        const infoSection = document.getElementById('kontak'); // Ganti ID jika berubah
+        const kontakSection = document.getElementById('kontak'); 
 
         searchBar.addEventListener('keyup', (e) => {
             const searchTerm = e.target.value.toLowerCase();
-            
-            // Function to filter cards within a section
             const filterSection = (section, cardSelector, titleSelector) => {
                 let matchFoundInSection = false; 
                 const cards = section.querySelectorAll(cardSelector);
@@ -68,76 +56,134 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (titleElement) {
                         const title = titleElement.textContent.toLowerCase();
                         if (title.includes(searchTerm)) {
-                            // Use 'flex' for product cards, default for info cards
                             card.style.display = (cardSelector === '.product-card') ? "flex" : ""; 
                             matchFoundInSection = true;
                         } else { card.style.display = "none"; }
-                    } else {
-                        // Handle cases where titleSelector might not match (optional)
-                         console.warn("Title element not found for selector:", titleSelector, "in card:", card);
-                         card.style.display = "none"; 
-                    }
+                    } else { card.style.display = "none"; }
                 });
-                // Show/hide the entire section
                 if (matchFoundInSection || searchTerm === "") { section.style.display = ""; } 
                 else { section.style.display = "none"; }
             };
-
-            // Filter product sections
             productSections.forEach(section => filterSection(section, '.product-card', 'h2'));
-            
-            // Filter info section
-            if (infoSection) { filterSection(infoSection, '.info-card', '.info-card'); /* Title is the card itself */ }
+            if (kontakSection) { filterSection(kontakSection, '.info-card', '.info-card'); }
         });
     }
 
-
-    // --- 7. KODE FUNGSI HAMBURGER MENU (Update u/ Search Box) ---
+    // --- 7. KODE FUNGSI HAMBURGER MENU ---
     const hamburger = document.querySelector('.hamburger-menu');
     const navLinksContainer = document.querySelector('.nav-links');
-    const searchContainerNav = document.querySelector('.search-container-nav'); // Ambil search container
-
+    const searchContainerNav = document.querySelector('.search-container-nav'); 
+    
     if (hamburger && navLinksContainer && searchContainerNav) {
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active'); 
             navLinksContainer.classList.toggle('active');
-            searchContainerNav.classList.toggle('active'); // Togel search box juga
+            searchContainerNav.classList.toggle('active'); 
+            if (!navLinksContainer.classList.contains('active')) {
+                 closeAllDropdowns();
+            }
         });
     }
 
-    // --- 8. KODE FUNGSI SMOOTH SCROLL (Update u/ Product List) ---
-    // Gabungkan link navbar dan link product list
-    const scrollLinks = document.querySelectorAll('.nav-links a[href^="#"], #product-quick-list a[href^="#"]'); 
+    // --- 8. KODE FUNGSI DROPDOWN KATALOG (Klik & Nested) ---
+    const catalogToggle = document.getElementById('catalog-toggle');
+    const catalogMenu = document.getElementById('catalog-menu');
+    const dropdownWrapper = catalogToggle ? catalogToggle.closest('.dropdown') : null;
+    const categoryToggles = document.querySelectorAll('.category-toggle');
+
+    const closeAllCategoryDropdowns = (exceptThisCategory = null) => {
+        categoryToggles.forEach(toggle => {
+            const category = toggle.closest('.dropdown-category');
+            if (category !== exceptThisCategory) {
+                category.classList.remove('active');
+            }
+        });
+    };
+    
+     const closeMainDropdown = () => {
+         if (dropdownWrapper && catalogMenu) {
+             dropdownWrapper.classList.remove('active');
+         }
+     };
+
+     const closeAllDropdowns = () => {
+         closeMainDropdown();
+         closeAllCategoryDropdowns();
+     };
+
+    if (catalogToggle && catalogMenu && dropdownWrapper) {
+        catalogToggle.addEventListener('click', (e) => {
+            // Prevent default only if it's a link click, allow button behavior
+            if (e.target.tagName === 'A') {
+                e.preventDefault(); 
+            }
+            dropdownWrapper.classList.toggle('active');
+            if (!dropdownWrapper.classList.contains('active')) {
+                 closeAllCategoryDropdowns();
+            }
+        });
+
+        categoryToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const parentCategory = toggle.closest('.dropdown-category');
+                const wasActive = parentCategory.classList.contains('active');
+                closeAllCategoryDropdowns(); // Close others first
+                if (!wasActive) {
+                    parentCategory.classList.add('active'); // Open clicked one
+                } // If it was already active, closing others is enough
+            });
+        });
+
+        const productLinksInDropdown = catalogMenu.querySelectorAll('.category-links a');
+        productLinksInDropdown.forEach(link => {
+            link.addEventListener('click', () => {
+                 closeAllDropdowns(); 
+                 // Smooth scroll is handled below
+            });
+        });
+    }
+    
+    document.addEventListener('click', (e) => {
+         // Close dropdown if click is outside the main dropdown wrapper AND not the hamburger
+        if (dropdownWrapper && !dropdownWrapper.contains(e.target) && hamburger && !hamburger.contains(e.target) && !e.target.closest('.hamburger-menu')) {
+             closeAllDropdowns();
+        }
+    });
+
+
+    // --- 9. KODE FUNGSI SMOOTH SCROLL (Untuk SEMUA Link #) ---
+    const scrollLinks = document.querySelectorAll('a[href^="#"]'); 
     let navHeight = 0;
     if (navbar) { navHeight = navbar.offsetHeight; }
 
     scrollLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            
-            // Cek jika targetId valid dan bukan hanya '#'
-            if (targetId && targetId !== '#') {
-                const targetElement = document.querySelector(targetId);
-                 if (targetElement) {
-                      // Recalculate navHeight here in case it changed due to shrink or load
-                     if (navbar) { navHeight = navbar.offsetHeight; } 
-                     const targetPosition = targetElement.offsetTop - navHeight - 15; // Offset
-                     window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                 } else {
-                     console.warn("Target element not found for:", targetId); // Debugging
-                 }
-            } else if (targetId === '#hero' || targetId === '#') { // Link Home/#
-                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+        // Exclude the main catalog toggle from this specific scroll listener
+        if (link.id !== 'catalog-toggle') { 
+            link.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                
+                if (targetId && targetId.startsWith('#') && targetId.length > 1) { // Check if it's a valid hash link
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                         e.preventDefault(); 
+                         if (navbar) { navHeight = navbar.offsetHeight; } 
+                         const targetPosition = targetElement.offsetTop - navHeight - 15; 
+                         window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                    } 
+                } else if (targetId === '#hero' || targetId === '#') { // Link Home/#
+                     e.preventDefault();
+                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
 
-            // Otomatis tutup menu di HP setelah link diklik (jika menu terbuka)
-            if (navLinksContainer && hamburger && searchContainerNav && navLinksContainer.classList.contains('active')) {
-                hamburger.classList.remove('active');
-                navLinksContainer.classList.remove('active');
-                searchContainerNav.classList.remove('active');
-            }
-        });
+                // Close hamburger menu on mobile after any link click
+                if (navLinksContainer && hamburger && searchContainerNav && navLinksContainer.classList.contains('active')) {
+                    hamburger.classList.remove('active');
+                    navLinksContainer.classList.remove('active');
+                    searchContainerNav.classList.remove('active');
+                     closeAllDropdowns(); // Also close dropdown if open
+                }
+            });
+        }
     });
 
-}); // Akhir dari document.addEventListener('DOMContentLoaded')
+}); // Akhir DOMContentLoaded
