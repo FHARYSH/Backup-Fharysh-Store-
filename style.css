@@ -211,3 +211,6 @@ footer { background-color: #343a40; color: #adb5bd; text-align: center; padding:
         .category-links { background-color: #2a2a2a; border-left-color: #5cacee; }
     }
 } /* Akhir Dark Mode */
+
+body.noscroll {
+    overflow: hidden;
