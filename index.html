@@ -7,7 +7,7 @@
     <meta name="description" content="FHARYSH STORE menyediakan akun premium Netflix, Spotify, Canva Pro, dan lainnya. Murah, Amanah, dan Bergaransi.">
     
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2.0"> 
+    <link rel="stylesheet" href="style.css?v=3.0"> <!-- Versi baru -->
     <link rel="icon" href="images/favicon.png" type="image/png"> 
 </head>
 <body>
@@ -16,6 +16,7 @@
         <div class="loader"></div>
     </div>
 
+    <!-- ==================== Navbar ==================== -->
     <nav class="navbar">
         <div class="container">
             <a href="#hero" class="nav-brand">
@@ -30,77 +31,43 @@
             
             <div class="nav-links">
                 <a href="#hero">Home</a>
+                
+                <!-- Katalog Dropdown (Konten dinamis) -->
                 <div class="dropdown">
                     <a href="#katalog" class="dropdown-toggle" id="catalog-toggle">Katalog <span class="dropdown-arrow">▼</span></a>
                     <div class="dropdown-menu" id="catalog-menu">
+                        <!-- Kategori 1 (Konten dinamis) -->
                         <div class="dropdown-category">
                             <button class="category-toggle">📱 Editing & Desain <span class="category-arrow">▶</span></button>
-                            <div class="category-links">
-                                <a href="#prod-alight-motion">Alight Motion</a>
-                                <a href="#prod-canva">Canva Pro</a>
-                                <a href="#prod-capcut">CapCut Pro</a>
-                                <a href="#prod-ibis-paint">Ibis Paint X</a>
-                                <a href="#prod-lightroom">Lightroom Mobile</a>
-                                <a href="#prod-picsart">PicsArt Gold</a>
-                                <a href="#prod-remini">Remini (Pro & Lite)</a>
-                                <a href="#prod-vsco">VSCO (Plus & Pro)</a>
-                                <a href="#prod-wink">Wink Premium</a>
+                            <div class="category-links" id="editing-links-container">
+                                <!-- Link produk akan dimuat oleh JS -->
                             </div>
                         </div>
+                        <!-- Kategori 2 (Konten dinamis) -->
                         <div class="dropdown-category">
                             <button class="category-toggle">🎬 Streaming & Hiburan <span class="category-arrow">▶</span></button>
-                            <div class="category-links">
-                                <a href="#prod-apple-music">Apple Music</a>
-                                <a href="#prod-apple-tv">Apple TV+</a>
-                                <a href="#prod-apple-arcade">Apple Arcade</a>
-                                <a href="#prod-bstation">Bstation Premium</a>
-                                <a href="#prod-disney">Disney+ Hotstar</a>
-                                <a href="#prod-dramabox">DramaBox Premium</a>
-                                <a href="#prod-hbo">HBO Go</a>
-                                <a href="#prod-iflix">iFlix VIP</a>
-                                <a href="#prod-iqiyi">iQiyi VIP</a>
-                                <a href="#prod-loklok">Loklok VIP</a>
-                                <a href="#prod-mangotv">MangoTV Premium</a>
-                                <a href="#prod-netflix">Netflix Premium</a>
-                                <a href="#prod-primevideo">Prime Video</a>
-                                <a href="#prod-rcti">RCTI+ Premium</a>
-                                <a href="#prod-shortmax">Shortmax Premium</a>
-                                <a href="#prod-spotify">Spotify Premium</a>
-                                <a href="#prod-vidio">Vidio</a>
-                                <a href="#prod-visionplus">Vision+ Premium</a>
-                                <a href="#prod-viu">Viu Premium</a>
-                                <a href="#prod-wetv">WeTV VIP</a>
-                                <a href="#prod-youku">Youku VIP</a>
-                                <a href="#prod-youtube">YouTube Premium</a>
+                            <div class="category-links" id="streaming-links-container">
+                                <!-- Link produk akan dimuat oleh JS -->
                             </div>
                         </div>
+                        <!-- Kategori 3 (Konten dinamis) -->
                         <div class="dropdown-category">
                             <button class="category-toggle">📚 Edukasi & AI <span class="category-arrow">▶</span></button>
-                            <div class="category-links">
-                                <a href="#prod-chatgpt">ChatGPT Plus</a>
-                                <a href="#prod-duolingo">Duolingo Super</a>
-                                <a href="#prod-fizzo">Fizzo Premium</a>
-                                <a href="#prod-gemini">Gemini Pro</a>
-                                <a href="#prod-perplexity">Perplexity Pro</a>
-                                <a href="#prod-wattpad">Wattpad Premium</a>
-                                <a href="#prod-wibuku">Wibuku Premium</a>
+                            <div class="category-links" id="edukasi-links-container">
+                                <!-- Link produk akan dimuat oleh JS -->
                             </div>
                         </div>
+                        <!-- Kategori 4 (Konten dinamis) -->
                         <div class="dropdown-category">
                             <button class="category-toggle">🔐 Utilitas & Lainnya <span class="category-arrow">▶</span></button>
-                            <div class="category-links">
-                                <a href="#prod-camscanner">CamScanner</a>
-                                <a href="#prod-discord-nitro">Discord Nitro</a>
-                                <a href="#prod-getcontact">GetContact</a>
-                                <a href="#prod-ms365">Microsoft 365</a>
-                                <a href="#prod-telegram">Telegram Premium</a>
-                                <a href="#prod-vcc">VCC</a>
-                                <a href="#prod-vpn">VPN Premium</a>
-                                <a href="#prod-zoom">Zoom Pro</a>
+                            <div class="category-links" id="utilitas-links-container">
+                                <!-- Link produk akan dimuat oleh JS -->
                             </div>
                         </div>
                     </div>
                 </div>
+                
+                <a href="#ai-assistant">Asisten AI</a>
                 <a href="#why-us">Tentang</a>
                 <a href="#how-to-order">Cara Order</a>
                 <a href="#kontak">Kontak</a> 
@@ -108,6 +75,7 @@
         </div>
     </nav>
 
+    <!-- ==================== Hero Section ==================== -->
     <section id="hero">
         <div class="hero-overlay"></div>
         <div class="container hero-content">
@@ -117,8 +85,29 @@
         </div>
     </section>
 
+    <!-- ==================== Main Content Area ==================== -->
     <main>
         <div class="container">
+
+            <!-- =================================================== -->
+            <!--   ✨ ASISTEN AI GEMINI (BARU)                       -->
+            <!-- =================================================== -->
+            <section id="ai-assistant" data-aos="fade-up">
+                <h2>✨ Asisten AI FHARYSH STORE</h2>
+                <p style="text-align: center; max-width: 700px; margin: -1rem auto 2rem auto;">Bingung mau pilih akun apa? Coba ceritakan kebutuhan Anda (misal: "Saya pelajar, suka nonton anime dan butuh bantuan tugas") dan biarkan AI kami merekomendasikan produk yang tepat!</p>
+                <div class="ai-chat-box">
+                    <div class="ai-input-container">
+                        <textarea id="ai-prompt-input" placeholder="Contoh: Saya seorang desainer grafis yang butuh aplikasi editing video dan foto..." rows="3"></textarea>
+                        <button id="ai-generate-btn" class="btn btn-primary">
+                            <span class="btn-text">Dapatkan Rekomendasi</span>
+                            <span class="loader-ai" style="display: none;"></span>
+                        </button>
+                    </div>
+                    <div id="ai-response-container" class="ai-response" style="display: none;">
+                        <!-- Respons AI akan muncul di sini -->
+                    </div>
+                </div>
+            </section>
             
             <section id="why-us" data-aos="fade-up">
                  <h2>Tentang Kami</h2>
@@ -141,6 +130,7 @@
             
             <div id="katalog" style="position: relative; top: -80px;"></div> 
 
+            <!-- (Semua product-grid di bawah ini akan diisi oleh JavaScript) -->
             <section id="editing" class="product-section">
                 <h2 data-aos="fade-right">📱 Editing & Desain</h2>
                 <div class="product-grid" id="editing-grid">
@@ -180,7 +170,7 @@
             <section id="how-to-order" data-aos="fade-up">
                  <h2>Cara Order</h2>
                  <ol>
-                    <li>Jelajahi katalog di atas atau gunakan menu dropdown "Katalog".</li>
+                    <li>Jelajahi katalog, atau gunakan Asisten AI untuk rekomendasi.</li>
                     <li>Klik tombol "Order via WA" pada produk yang Anda inginkan.</li>
                     <li>Anda akan otomatis diarahkan ke WhatsApp kami.</li>
                     <li>Sebutkan varian yang Anda pilih (jika ada beberapa).</li>
@@ -219,7 +209,7 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
     
-    <script src="script.js?v=2.0"></script> 
+    <script src="script.js?v=3.0"></script> <!-- Versi baru -->
 
 </body>
 </html>
