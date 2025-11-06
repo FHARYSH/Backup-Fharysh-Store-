@@ -3,29 +3,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1. PRELOADER ---
     const preloader = document.getElementById('preloader');
     if (preloader) {
+        // Sembunyikan preloader setelah halaman selesai dimuat
         window.addEventListener('load', () => preloader.classList.add('hidden'));
-        // Fallback timeout in case 'load' event is slow or fails
+        // Fallback: Sembunyikan paksa setelah beberapa detik jika 'load' lambat
         setTimeout(() => preloader.classList.add('hidden'), 1500);
     }
 
     // --- 2. INISIALISASI AOS (ANIMASI SCROLL - LOOPING) ---
-    AOS.init({ duration: 800, once: false, offset: 80 });
+    AOS.init({ 
+        duration: 800, // Durasi animasi
+        once: false,   // 'false' berarti animasi akan berulang (looping) setiap kali scroll
+        offset: 80     // Jarak trigger animasi
+    });
 
     // --- 3. INISIALISASI TYPED.JS (EFEK KETIK) ---
     const typedTarget = document.querySelector('.typed-text');
     if (typedTarget) {
         new Typed('.typed-text', {
             strings: ['Hiburan.', 'Kreativitas.', 'Produktivitas.'],
-            typeSpeed: 70, backSpeed: 50, backDelay: 1500, loop: true
+            typeSpeed: 70, 
+            backSpeed: 50, 
+            backDelay: 1500, 
+            loop: true
         });
     }
-
+    
     // --- 4. NAVBAR SHRINK ON SCROLL ---
     const navbar = document.querySelector('.navbar');
     if (navbar) {
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) { navbar.classList.add('navbar-scrolled'); }
-            else { navbar.classList.remove('navbar-scrolled'); }
+            if (window.scrollY > 50) { // Jika scroll lebih dari 50px
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+            }
         });
     }
 
@@ -33,66 +44,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToTopButton = document.getElementById('back-to-top');
     if (backToTopButton) {
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) { backToTopButton.classList.add('visible'); }
-            else { backToTopButton.classList.remove('visible'); }
+            if (window.scrollY > 300) { // Tampilkan setelah scroll 300px
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
         });
+        // Klik untuk smooth scroll ke atas
         backToTopButton.addEventListener('click', (e) => {
-             e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' });
+             e.preventDefault(); 
+             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 
-    // --- 6. KODE FUNGSI PENCARIAN (SEARCH BAR) ---
-    const searchBar = document.getElementById('search-bar');
-    if (searchBar) {
-        const productSections = document.querySelectorAll('.product-section');
-        const kontakSection = document.getElementById('kontak'); // Assuming 'kontak' is the ID for the info section
-
-        searchBar.addEventListener('keyup', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filterSection = (section, cardSelector, titleSelector) => {
-                let matchFoundInSection = false;
-                const cards = section.querySelectorAll(cardSelector);
-                cards.forEach(card => {
-                    const titleElement = card.querySelector(titleSelector);
-                    if (titleElement) {
-                        const title = titleElement.textContent.toLowerCase();
-                        if (title.includes(searchTerm)) {
-                            card.style.display = (cardSelector === '.product-card') ? "flex" : "";
-                            matchFoundInSection = true;
-                        } else { card.style.display = "none"; }
-                    } else { card.style.display = "none"; }
-                });
-                // Show/hide the entire section based on matches within it
-                if (matchFoundInSection || searchTerm === "") { section.style.display = ""; }
-                else { section.style.display = "none"; }
-            };
-            // Apply filter to all relevant sections
-            productSections.forEach(section => filterSection(section, '.product-card', 'h2'));
-            if (kontakSection) { filterSection(kontakSection, '.info-card', '.info-card'); } // Info cards act as their own title
-        });
-    }
+    // --- (Bagian Search Bar sengaja dihapus sesuai permintaan) ---
 
     // --- 7. KODE FUNGSI HAMBURGER MENU ---
     const hamburger = document.querySelector('.hamburger-menu');
     const navLinksContainer = document.querySelector('.nav-links');
-    const searchContainerNav = document.querySelector('.search-container-nav');
 
-    // Utility function to close all dropdowns and remove noscroll
+    // Fungsi utilitas untuk menutup semua dropdown & mengaktifkan scroll body
     const closeAllDropdownsAndEnableScroll = () => {
-        closeAllDropdowns(); // Closes main and category dropdowns
-        document.body.classList.remove('noscroll'); // Ensure scroll is enabled
+        closeAllDropdowns();
+        document.body.classList.remove('noscroll');
     };
 
-    if (hamburger && navLinksContainer && searchContainerNav) {
+    if (hamburger && navLinksContainer) {
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
             navLinksContainer.classList.toggle('active');
-            searchContainerNav.classList.toggle('active');
-            // If hamburger menu is closed, ensure all dropdowns are closed and scroll is enabled
+            
+            // Jika menu hamburger ditutup
             if (!navLinksContainer.classList.contains('active')) {
                  closeAllDropdownsAndEnableScroll();
             } else {
-                 // If hamburger opened AND main dropdown was active, ensure noscroll is applied
+                 // Jika menu hamburger dibuka DAN dropdown katalog sedang aktif
                  if (dropdownWrapper && dropdownWrapper.classList.contains('active')) {
                      document.body.classList.add('noscroll');
                  }
@@ -100,125 +86,117 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 8. KODE FUNGSI DROPDOWN KATALOG (Perbaikan Tutup Kategori & Noscroll) ---
+    // --- 8. KODE FUNGSI DROPDOWN KATALOG (Klik & Nested) ---
     const catalogToggle = document.getElementById('catalog-toggle');
     const catalogMenu = document.getElementById('catalog-menu');
     const dropdownWrapper = catalogToggle ? catalogToggle.closest('.dropdown') : null;
     const categoryToggles = document.querySelectorAll('.category-toggle');
 
+    // Fungsi untuk menutup semua sub-kategori
     const closeAllCategoryDropdowns = (exceptThisCategory = null) => {
         categoryToggles.forEach(toggle => {
             const category = toggle.closest('.dropdown-category');
-            if (category !== exceptThisCategory) {
-                category.classList.remove('active');
+            if (category !== exceptThisCategory) { 
+                category.classList.remove('active'); 
             }
         });
     };
-
+     // Fungsi untuk menutup dropdown utama "Katalog"
      const closeMainDropdown = () => {
-         if (dropdownWrapper && catalogMenu && dropdownWrapper.classList.contains('active')) { // Check if it's currently active before closing
-             dropdownWrapper.classList.remove('active');
-             document.body.classList.remove('noscroll'); // Remove noscroll when main dropdown closes
+         if (dropdownWrapper && catalogMenu && dropdownWrapper.classList.contains('active')) {
+             dropdownWrapper.classList.remove('active'); 
+             document.body.classList.remove('noscroll'); // Aktifkan lagi scroll body
          }
      };
-
+     // Fungsi untuk menutup semua (utama + sub)
      const closeAllDropdowns = () => {
-         closeMainDropdown();
+         closeMainDropdown(); 
          closeAllCategoryDropdowns();
-         // No need to remove noscroll here again, closeMainDropdown handles it
      };
 
-
     if (catalogToggle && catalogMenu && dropdownWrapper) {
+        // Event listener untuk tombol "Katalog" utama
         catalogToggle.addEventListener('click', (e) => {
-            // Prevent default scroll behavior for the catalog link itself
-            if (e.target.tagName === 'A' || e.target === catalogToggle || e.target.closest('#catalog-toggle')) {
-                 e.preventDefault();
-            }
-
-            const isActive = dropdownWrapper.classList.toggle('active');
-            if (!isActive) { // If closing the main dropdown
-                 closeAllCategoryDropdowns(); // Ensure subcategories are closed too
-                 document.body.classList.remove('noscroll');
-            } else { // If opening the main dropdown
-                 document.body.classList.add('noscroll');
-                 catalogMenu.scrollTop = 0; // Reset scroll position of the dropdown menu
-            }
+             // Mencegah link #katalog melompat
+             if (e.target.tagName === 'A' || e.target === catalogToggle || e.target.closest('#catalog-toggle')) { 
+                 e.preventDefault(); 
+             }
+             
+             const isActive = dropdownWrapper.classList.toggle('active');
+             
+             if (!isActive) { // Jika baru saja ditutup
+                 closeAllCategoryDropdowns(); // Tutup semua sub-kategori
+                 document.body.classList.remove('noscroll'); // Aktifkan scroll body
+             } else { // Jika baru saja dibuka
+                 document.body.classList.add('noscroll'); // Nonaktifkan scroll body
+                 catalogMenu.scrollTop = 0; // Reset scroll dropdown ke atas
+             }
         });
 
-        // Event listener for category toggles (accordion behavior)
+        // Event listener untuk tombol sub-kategori (Editing, Streaming, dll.)
         categoryToggles.forEach(toggle => {
-            toggle.addEventListener('click', () => {
-                const parentCategory = toggle.closest('.dropdown-category');
-                const currentlyActive = parentCategory.classList.contains('active');
-
-                // Always close other categories first
-                closeAllCategoryDropdowns(parentCategory);
-
-                // Then toggle the clicked category
-                if (!currentlyActive) {
-                    parentCategory.classList.add('active');
-                } else {
-                    parentCategory.classList.remove('active'); // Close if already open
-                }
-            });
+             toggle.addEventListener('click', () => {
+                 const parentCategory = toggle.closest('.dropdown-category');
+                 const currentlyActive = parentCategory.classList.contains('active');
+                 
+                 closeAllCategoryDropdowns(parentCategory); // Tutup kategori lain
+                 
+                 if (!currentlyActive) { 
+                     parentCategory.classList.add('active'); // Buka kategori ini
+                 } else { 
+                     parentCategory.classList.remove('active'); // Tutup kategori ini (jika diklik lagi)
+                 }
+             });
         });
 
-
-        // Event listener for product links inside the dropdown
+        // Event listener untuk link produk di dalam dropdown
         const productLinksInDropdown = catalogMenu.querySelectorAll('.category-links a');
-        productLinksInDropdown.forEach(link => {
-            link.addEventListener('click', () => {
-                 closeAllDropdownsAndEnableScroll(); // Close dropdowns and enable body scroll
-                 // Smooth scroll to the product will be handled by the listener below (#9)
-            });
+        productLinksInDropdown.forEach(link => { 
+             link.addEventListener('click', () => { 
+                 closeAllDropdownsAndEnableScroll(); // Tutup semua & aktifkan scroll
+             }); 
         });
     }
-
-    // Close dropdown if clicked outside of it
+    
+    // Event listener untuk klik di luar area dropdown/navbar
     document.addEventListener('click', (e) => {
-        // Check if the click is outside the dropdown wrapper AND not on the hamburger icon or inside it
+        // Jika klik di luar dropdown DAN di luar hamburger
         if (dropdownWrapper && !dropdownWrapper.contains(e.target) && hamburger && !hamburger.contains(e.target) && !e.target.closest('.hamburger-menu')) {
              closeAllDropdownsAndEnableScroll();
         }
     });
 
-
     // --- 9. KODE FUNGSI SMOOTH SCROLL (Untuk SEMUA Link #) ---
     const scrollLinks = document.querySelectorAll('a[href^="#"]');
     let navHeight = 0;
-    if (navbar) { navHeight = navbar.offsetHeight; } // Initial height
+    if (navbar) { navHeight = navbar.offsetHeight; } // Ambil tinggi navbar awal
 
-    scrollLinks.forEach(link => {
-        // Exclude the main catalog toggle button from this specific scroll listener
-        // because its click is already handled to open/close the dropdown
-        if (link.id !== 'catalog-toggle') {
+    scrollLinks.forEach(link => { 
+        // Pastikan kita tidak menimpa listener tombol dropdown utama
+        if (link.id !== 'catalog-toggle') { 
             link.addEventListener('click', function(e) {
                 const targetId = this.getAttribute('href');
-
-                // Check if it's a valid internal hash link longer than just '#'
+                
+                // Cek jika link valid (#hero, #katalog, #prod-netflix, dll)
                 if (targetId && targetId.startsWith('#') && targetId.length > 1) {
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
-                         e.preventDefault(); // Prevent default jump only if target exists
-                         // Recalculate navbar height dynamically in case it shrunk
-                         if (navbar) { navHeight = navbar.offsetHeight; }
-                         const targetPosition = targetElement.offsetTop - navHeight - 15; // Offset for navbar
+                         e.preventDefault(); 
+                         if (navbar) { navHeight = navbar.offsetHeight; } // Ambil tinggi navbar terbaru (jika shrink)
+                         const targetPosition = targetElement.offsetTop - navHeight - 15; // Offset 15px
                          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
                     }
-                    // If targetElement is null (e.g., link to a non-existent ID), let the default browser behavior handle it (or do nothing)
-                } else if (targetId === '#hero' || targetId === '#') { // Specific handling for link to top
-                     e.preventDefault();
+                } else if (targetId === '#hero' || targetId === '#') { // Link ke Home/#
+                     e.preventDefault(); 
                      window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
-                // If it's not a hash link starting with #, allow default behavior (e.g., external links)
-
-                // Close hamburger menu on mobile after any link click (if it's open)
-                if (navLinksContainer && hamburger && searchContainerNav && navLinksContainer.classList.contains('active')) {
-                    hamburger.classList.remove('active');
+                
+                // Tutup hamburger menu (jika terbuka) setelah link diklik
+                if (navLinksContainer && hamburger && navLinksContainer.classList.contains('active')) {
+                    hamburger.classList.remove('active'); 
                     navLinksContainer.classList.remove('active');
-                    searchContainerNav.classList.remove('active');
-                     closeAllDropdownsAndEnableScroll(); // Also close dropdown and enable scroll
+                    // (searchContainerNav dihapus dari sini)
+                    closeAllDropdownsAndEnableScroll(); // Pastikan semua tertutup
                 }
             });
         }
