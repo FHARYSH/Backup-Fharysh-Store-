@@ -1,30 +1,152 @@
+// ===================================================
+// --- 0. KONFIGURASI GOOGLE SHEET & INISIALISASI ---
+// ===================================================
+
+// Link publik CSV dari Google Sheet Anda
+const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJM96AooAlxUb0Vq9PRuvZofejCc01FytrE4FjmysgvFUAhsqiyJePy6ZmxGoqdyTdZjHoandHExwo/pub?gid=0&single=true&output=csv';
+
+// Elemen Preloader Utama
+const preloader = document.getElementById('preloader');
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. PRELOADER ---
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-        // Sembunyikan preloader setelah halaman selesai dimuat
-        window.addEventListener('load', () => preloader.classList.add('hidden'));
-        // Fallback: Sembunyikan paksa setelah beberapa detik jika 'load' lambat
-        setTimeout(() => preloader.classList.add('hidden'), 1500);
+    // --- 1. FUNGSI UTAMA: AMBIL & TAMPILKAN PRODUK ---
+    
+    /**
+     * Mengubah teks CSV mentah menjadi array objek produk.
+     * @param {string} csvText - Teks mentah dari file CSV.
+     * @returns {Array<Object>} Array berisi objek produk.
+     */
+    function parseCSV(csvText) {
+        try {
+            const rows = csvText.trim().split('\n');
+            if (rows.length < 2) return []; // Tidak ada data jika hanya ada header
+
+            // Ambil header, bersihkan dari spasi/karakter aneh
+            const headers = rows.shift().split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+
+            return rows.map(row => {
+                // Parser CSV sederhana yang menangani koma di dalam deskripsi (jika terbungkus kutip)
+                // Ini regex sederhana, data Anda harus bersih
+                const values = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/^"|"$/g, ''));
+
+                if (values.length === headers.length) {
+                    const obj = {};
+                    headers.forEach((header, index) => {
+                        obj[header] = values[index];
+                    });
+                    return obj;
+                }
+                return null; // Baris tidak valid
+            }).filter(Boolean); // Hapus baris yang tidak valid
+        
+        } catch (error) {
+            console.error("Error parsing CSV:", error, csvText);
+            return [];
+        }
     }
 
+    /**
+     * Mengambil data dari Google Sheet dan merender kartu produk.
+     */
+    async function fetchAndDisplayProducts() {
+        // Objek untuk menampung HTML per kategori
+        const categoryHtml = {
+            editing: '',
+            streaming: '',
+            edukasi: '',
+            utilitas: ''
+        };
+        
+        let productsLoaded = false;
+
+        try {
+            const response = await fetch(GOOGLE_SHEET_CSV_URL);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const csvText = await response.text();
+            const products = parseCSV(csvText);
+
+            if (products.length === 0 && csvText.length > 0) {
+                 throw new Error("Data CSV tidak bisa di-parse. Cek format Sheet.");
+            }
+
+            // Loop setiap produk dan buat HTML Card
+            products.forEach(product => {
+                // Pastikan semua data ada
+                if (!product.id || !product.kategori || !categoryHtml.hasOwnProperty(product.kategori)) {
+                    console.warn("Produk dilewati (data tidak lengkap/kategori salah):", product.nama);
+                    return; // Lewati produk ini
+                }
+
+                // Buat link WA yang di-encode dengan benar
+                const waMessage = encodeURIComponent(`Halo FHARYSH STORE, saya mau order ${product.nama}`);
+                const waLink = `https://wa.me/6285853409699?text=${waMessage}`;
+
+                const productCardHTML = `
+                    <div class="product-card" id="${product.id}" data-aos="fade-up">
+                        <img src="${product.linkGambar}" alt="Logo ${product.nama}" loading="lazy">
+                        <h2>${product.nama}</h2>
+                        <p class="description">${product.deskripsi}</p>
+                        <p class="price">${product.hargaRange}</p>
+                        <a href="${waLink}" class="btn-order" target="_blank">Order via WA</a>
+                    </div>
+                `;
+                
+                categoryHtml[product.kategori] += productCardHTML;
+            });
+
+            // Masukkan semua HTML yang sudah terkumpul ke dalam grid
+            for (const categoryId in categoryHtml) {
+                const gridElement = document.getElementById(`${categoryId}-grid`);
+                if (gridElement) {
+                    if (categoryHtml[categoryId]) {
+                        gridElement.innerHTML = categoryHtml[categoryId]; // Ganti loader dengan kartu produk
+                    } else {
+                        gridElement.innerHTML = "<p>Belum ada produk untuk kategori ini.</p>";
+                    }
+                }
+            }
+            
+            productsLoaded = true;
+
+        } catch (error) {
+            console.error("Error mengambil produk dari Google Sheet: ", error);
+            // Tampilkan error di semua grid
+            for (const categoryId in categoryHtml) {
+                 const gridElement = document.getElementById(`${categoryId}-grid`);
+                 if (gridElement) {
+                    gridElement.innerHTML = "<p>Gagal memuat produk. Coba refresh halaman.</p>";
+                 }
+            }
+        } finally {
+            // Sembunyikan preloader utama SETELAH fetch selesai (baik berhasil maupun gagal)
+            if (preloader) {
+                preloader.classList.add('hidden');
+            }
+            // Re-inisialisasi AOS agar animasi berfungsi pada kartu yang baru dimuat
+            if (productsLoaded) {
+                setTimeout(() => {
+                    AOS.refresh();
+                }, 100); // Beri jeda sedikit agar DOM update
+            }
+        }
+    }
+    
+    // Panggil fungsi untuk memuat produk
+    fetchAndDisplayProducts();
+
+
     // --- 2. INISIALISASI AOS (ANIMASI SCROLL - LOOPING) ---
-    AOS.init({ 
-        duration: 800, // Durasi animasi
-        once: false,   // 'false' berarti animasi akan berulang (looping) setiap kali scroll
-        offset: 80     // Jarak trigger animasi
-    });
+    AOS.init({ duration: 800, once: false, offset: 80 });
 
     // --- 3. INISIALISASI TYPED.JS (EFEK KETIK) ---
     const typedTarget = document.querySelector('.typed-text');
     if (typedTarget) {
         new Typed('.typed-text', {
             strings: ['Hiburan.', 'Kreativitas.', 'Produktivitas.'],
-            typeSpeed: 70, 
-            backSpeed: 50, 
-            backDelay: 1500, 
-            loop: true
+            typeSpeed: 70, backSpeed: 50, backDelay: 1500, loop: true
         });
     }
     
@@ -32,11 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.querySelector('.navbar');
     if (navbar) {
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) { // Jika scroll lebih dari 50px
-                navbar.classList.add('navbar-scrolled');
-            } else {
-                navbar.classList.remove('navbar-scrolled');
-            }
+            if (window.scrollY > 50) { navbar.classList.add('navbar-scrolled'); } 
+            else { navbar.classList.remove('navbar-scrolled'); }
         });
     }
 
@@ -44,26 +163,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToTopButton = document.getElementById('back-to-top');
     if (backToTopButton) {
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) { // Tampilkan setelah scroll 300px
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
+            if (window.scrollY > 300) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
         });
-        // Klik untuk smooth scroll ke atas
         backToTopButton.addEventListener('click', (e) => {
-             e.preventDefault(); 
-             window.scrollTo({ top: 0, behavior: 'smooth' });
+             e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 
-    // --- (Bagian Search Bar sengaja dihapus sesuai permintaan) ---
-
-    // --- 7. KODE FUNGSI HAMBURGER MENU ---
+    // --- 6. KODE FUNGSI HAMBURGER MENU ---
     const hamburger = document.querySelector('.hamburger-menu');
     const navLinksContainer = document.querySelector('.nav-links');
 
-    // Fungsi utilitas untuk menutup semua dropdown & mengaktifkan scroll body
     const closeAllDropdownsAndEnableScroll = () => {
         closeAllDropdowns();
         document.body.classList.remove('noscroll');
@@ -73,12 +184,9 @@ document.addEventListener('DOMContentLoaded', () => {
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
             navLinksContainer.classList.toggle('active');
-            
-            // Jika menu hamburger ditutup
             if (!navLinksContainer.classList.contains('active')) {
                  closeAllDropdownsAndEnableScroll();
             } else {
-                 // Jika menu hamburger dibuka DAN dropdown katalog sedang aktif
                  if (dropdownWrapper && dropdownWrapper.classList.contains('active')) {
                      document.body.classList.add('noscroll');
                  }
@@ -86,120 +194,90 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 8. KODE FUNGSI DROPDOWN KATALOG (Klik & Nested) ---
+    // --- 7. KODE FUNGSI DROPDOWN KATALOG ---
     const catalogToggle = document.getElementById('catalog-toggle');
     const catalogMenu = document.getElementById('catalog-menu');
     const dropdownWrapper = catalogToggle ? catalogToggle.closest('.dropdown') : null;
     const categoryToggles = document.querySelectorAll('.category-toggle');
 
-    // Fungsi untuk menutup semua sub-kategori
     const closeAllCategoryDropdowns = (exceptThisCategory = null) => {
         categoryToggles.forEach(toggle => {
             const category = toggle.closest('.dropdown-category');
-            if (category !== exceptThisCategory) { 
-                category.classList.remove('active'); 
-            }
+            if (category !== exceptThisCategory) { category.classList.remove('active'); }
         });
     };
-     // Fungsi untuk menutup dropdown utama "Katalog"
      const closeMainDropdown = () => {
          if (dropdownWrapper && catalogMenu && dropdownWrapper.classList.contains('active')) {
              dropdownWrapper.classList.remove('active'); 
-             document.body.classList.remove('noscroll'); // Aktifkan lagi scroll body
+             document.body.classList.remove('noscroll');
          }
      };
-     // Fungsi untuk menutup semua (utama + sub)
      const closeAllDropdowns = () => {
          closeMainDropdown(); 
          closeAllCategoryDropdowns();
      };
 
     if (catalogToggle && catalogMenu && dropdownWrapper) {
-        // Event listener untuk tombol "Katalog" utama
         catalogToggle.addEventListener('click', (e) => {
-             // Mencegah link #katalog melompat
-             if (e.target.tagName === 'A' || e.target === catalogToggle || e.target.closest('#catalog-toggle')) { 
-                 e.preventDefault(); 
-             }
-             
+             if (e.target.tagName === 'A' || e.target === catalogToggle || e.target.closest('#catalog-toggle')) { e.preventDefault(); }
              const isActive = dropdownWrapper.classList.toggle('active');
-             
-             if (!isActive) { // Jika baru saja ditutup
-                 closeAllCategoryDropdowns(); // Tutup semua sub-kategori
-                 document.body.classList.remove('noscroll'); // Aktifkan scroll body
-             } else { // Jika baru saja dibuka
-                 document.body.classList.add('noscroll'); // Nonaktifkan scroll body
-                 catalogMenu.scrollTop = 0; // Reset scroll dropdown ke atas
+             if (!isActive) { 
+                 closeAllCategoryDropdowns(); 
+                 document.body.classList.remove('noscroll'); 
+             } else { 
+                 document.body.classList.add('noscroll'); 
+                 catalogMenu.scrollTop = 0; 
              }
         });
-
-        // Event listener untuk tombol sub-kategori (Editing, Streaming, dll.)
         categoryToggles.forEach(toggle => {
              toggle.addEventListener('click', () => {
                  const parentCategory = toggle.closest('.dropdown-category');
                  const currentlyActive = parentCategory.classList.contains('active');
-                 
-                 closeAllCategoryDropdowns(parentCategory); // Tutup kategori lain
-                 
-                 if (!currentlyActive) { 
-                     parentCategory.classList.add('active'); // Buka kategori ini
-                 } else { 
-                     parentCategory.classList.remove('active'); // Tutup kategori ini (jika diklik lagi)
-                 }
+                 closeAllCategoryDropdowns(parentCategory); 
+                 if (!currentlyActive) { parentCategory.classList.add('active'); } 
+                 else { parentCategory.classList.remove('active'); }
              });
         });
-
-        // Event listener untuk link produk di dalam dropdown
         const productLinksInDropdown = catalogMenu.querySelectorAll('.category-links a');
         productLinksInDropdown.forEach(link => { 
-             link.addEventListener('click', () => { 
-                 closeAllDropdownsAndEnableScroll(); // Tutup semua & aktifkan scroll
-             }); 
+             link.addEventListener('click', () => { closeAllDropdownsAndEnableScroll(); }); 
         });
     }
-    
-    // Event listener untuk klik di luar area dropdown/navbar
     document.addEventListener('click', (e) => {
-        // Jika klik di luar dropdown DAN di luar hamburger
         if (dropdownWrapper && !dropdownWrapper.contains(e.target) && hamburger && !hamburger.contains(e.target) && !e.target.closest('.hamburger-menu')) {
              closeAllDropdownsAndEnableScroll();
         }
     });
 
-    // --- 9. KODE FUNGSI SMOOTH SCROLL (Untuk SEMUA Link #) ---
+    // --- 8. KODE FUNGSI SMOOTH SCROLL ---
     const scrollLinks = document.querySelectorAll('a[href^="#"]');
     let navHeight = 0;
-    if (navbar) { navHeight = navbar.offsetHeight; } // Ambil tinggi navbar awal
+    if (navbar) { navHeight = navbar.offsetHeight; }
 
     scrollLinks.forEach(link => { 
-        // Pastikan kita tidak menimpa listener tombol dropdown utama
         if (link.id !== 'catalog-toggle') { 
             link.addEventListener('click', function(e) {
                 const targetId = this.getAttribute('href');
-                
-                // Cek jika link valid (#hero, #katalog, #prod-netflix, dll)
                 if (targetId && targetId.startsWith('#') && targetId.length > 1) {
                     const targetElement = document.querySelector(targetId);
                     if (targetElement) {
                          e.preventDefault(); 
-                         if (navbar) { navHeight = navbar.offsetHeight; } // Ambil tinggi navbar terbaru (jika shrink)
-                         const targetPosition = targetElement.offsetTop - navHeight - 15; // Offset 15px
+                         if (navbar) { navHeight = navbar.offsetHeight; }
+                         const targetPosition = targetElement.offsetTop - navHeight - 15;
                          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
                     }
-                } else if (targetId === '#hero' || targetId === '#') { // Link ke Home/#
+                } else if (targetId === '#hero' || targetId === '#') {
                      e.preventDefault(); 
                      window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
                 
-                // Tutup hamburger menu (jika terbuka) setelah link diklik
                 if (navLinksContainer && hamburger && navLinksContainer.classList.contains('active')) {
                     hamburger.classList.remove('active'); 
                     navLinksContainer.classList.remove('active');
-                    // (searchContainerNav dihapus dari sini)
-                    closeAllDropdownsAndEnableScroll(); // Pastikan semua tertutup
+                    closeAllDropdownsAndEnableScroll();
                 }
             });
         }
     });
 
-}); // Akhir dari document.addEventListener('DOMContentLoaded')
+}); // Akhir DOMContentLoaded
